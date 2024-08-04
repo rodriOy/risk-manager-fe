@@ -1,23 +1,21 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import CategoriaList from './components/CategoriaList';
+import CategoriaForm from './components/CategoriaForm';
+import SeccionList from './components/SeccionList';
+import SeccionForm from './components/SeccionForm';
+import MedidaList from './components/MedidaList';
+import MedidaForm from './components/MedidaForm';
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>Gestión de Categorías, Secciones y Medidas de Seguridad</h1>
+      <CategoriaForm />
+      <CategoriaList />
+      <SeccionForm />
+      <SeccionList />
+      <MedidaForm />
+      <MedidaList />
     </div>
   );
 }
