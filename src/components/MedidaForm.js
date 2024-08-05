@@ -1,30 +1,46 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import {Button, TextField, Typography} from "@mui/material";
 
 function MedidaForm() {
   const [nombre, setNombre] = useState('');
+  const [message, setMessage] = useState('');
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    axios.post('http://127.0.0.1:5000/medidas', { medida: nombre })
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    axios.post('http://localhost:5000/medidas', {
+      medida: nombre
+    })
       .then(response => {
-        console.log('Medida de seguridad creada:', response.data);
+        setMessage('Medida de seguridad creada exitosamente');
         setNombre('');
       })
       .catch(error => {
-        console.error('Error al crear medida de seguridad:', error);
+        setMessage('Error: ' + error.response.data.error);
       });
   };
 
+
   return (
-    <form onSubmit={handleSubmit}>
-      <label>
-        Nombre de la Medida:
-        <input type="text" value={nombre} onChange={e => setNombre(e.target.value)} />
-      </label>
-      <button type="submit">Crear Medida</button>
-    </form>
+    <div>
+      <Typography variant="h5" gutterBottom>
+        Crear Nueva Medida de Seguridad
+      </Typography>
+      <form onSubmit={handleSubmit}>
+        <TextField
+          label="Nombre de la Categoría"
+          value={nombre}
+          onChange={(e) => setNombre(e.target.value)}
+          required
+          fullWidth
+          margin="normal"
+        />
+        <Button type="submit" variant="contained" color="primary">
+          Crear
+        </Button>
+      </form>
+      {message && <Typography variant="body1">{message}</Typography>}
+    </div>
   );
 }
-
 export default MedidaForm;

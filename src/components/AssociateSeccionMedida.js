@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { Typography, Container, TextField, MenuItem, Button, Box, Alert } from '@mui/material';
 
 function AssociateSeccionMedida() {
   const [secciones, setSecciones] = useState([]);
@@ -45,39 +46,65 @@ function AssociateSeccionMedida() {
   };
 
   return (
-    <div>
-      <h2>Asociar Sección con Medida de Seguridad</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Sección:</label>
-          <select value={selectedSeccion} onChange={(e) => setSelectedSeccion(e.target.value)}>
-            <option value="">Selecciona una sección</option>
-            {secciones.map(seccion => (
-              <option key={seccion.seccion_id} value={seccion.seccion_id}>{seccion.seccion_nombre}</option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <label>Medida de Seguridad:</label>
-          <select value={selectedMedida} onChange={(e) => setSelectedMedida(e.target.value)}>
-            <option value="">Selecciona una medida</option>
-            {medidas.map(medida => (
-              <option key={medida.idmedidasseguridad} value={medida.idmedidasseguridad}>{medida.medida}</option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <label>Cota Inferior:</label>
-          <input type="number" value={cotainf} onChange={(e) => setCotainf(e.target.value)} />
-        </div>
-        <div>
-          <label>Cota Superior:</label>
-          <input type="number" value={cotasup} onChange={(e) => setCotasup(e.target.value)} />
-        </div>
-        <button type="submit">Asociar</button>
-      </form>
-      {message && <p>{message}</p>}
-    </div>
+    <Container>
+      <Typography variant="h4" gutterBottom>Asociar Sección con Medida de Seguridad</Typography>
+      <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+        <TextField
+          select
+          label="Sección"
+          value={selectedSeccion}
+          onChange={(e) => setSelectedSeccion(e.target.value)}
+          fullWidth
+          margin="normal"
+        >
+          <MenuItem value="">
+            <em>Selecciona una sección</em>
+          </MenuItem>
+          {secciones.map(seccion => (
+            <MenuItem key={seccion.seccion_id} value={seccion.seccion_id}>
+              {seccion.seccion_nombre}
+            </MenuItem>
+          ))}
+        </TextField>
+        <TextField
+          select
+          label="Medida de Seguridad"
+          value={selectedMedida}
+          onChange={(e) => setSelectedMedida(e.target.value)}
+          fullWidth
+          margin="normal"
+        >
+          <MenuItem value="">
+            <em>Selecciona una medida</em>
+          </MenuItem>
+          {medidas.map(medida => (
+            <MenuItem key={medida.idmedidasseguridad} value={medida.idmedidasseguridad}>
+              {medida.medida}
+            </MenuItem>
+          ))}
+        </TextField>
+        <TextField
+          label="Cota Inferior"
+          type="number"
+          value={cotainf}
+          onChange={(e) => setCotainf(e.target.value)}
+          fullWidth
+          margin="normal"
+        />
+        <TextField
+          label="Cota Superior"
+          type="number"
+          value={cotasup}
+          onChange={(e) => setCotasup(e.target.value)}
+          fullWidth
+          margin="normal"
+        />
+        <Button type="submit" variant="contained" color="primary" sx={{ mt: 3, mb: 2 }}>
+          Asociar
+        </Button>
+      </Box>
+      {message && <Alert severity={message.includes('Error') ? 'error' : 'success'}>{message}</Alert>}
+    </Container>
   );
 }
 

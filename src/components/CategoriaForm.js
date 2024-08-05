@@ -1,29 +1,45 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { TextField, Button, Typography } from '@mui/material';
 
 function CategoriaForm() {
   const [nombre, setNombre] = useState('');
+  const [message, setMessage] = useState('');
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    axios.post('http://127.0.0.1:5000/categorias', { categorianombre: nombre })
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    axios.post('http://127.0.0.1:5000/categorias', {
+      categorianombre: nombre
+    })
       .then(response => {
-        console.log('Categoría creada:', response.data);
+        setMessage('Categoría creada exitosamente');
         setNombre('');
       })
       .catch(error => {
-        console.error('Error al crear categoría:', error);
+        setMessage('Error: ' + error.response.data.error);
       });
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <label>
-        Nombre de la Categoría:
-        <input type="text" value={nombre} onChange={e => setNombre(e.target.value)} />
-      </label>
-      <button type="submit">Crear Categoría</button>
-    </form>
+    <div>
+      <Typography variant="h5" gutterBottom>
+        Crear Nueva Categoría
+      </Typography>
+      <form onSubmit={handleSubmit}>
+        <TextField
+          label="Nombre de la Categoría"
+          value={nombre}
+          onChange={(e) => setNombre(e.target.value)}
+          required
+          fullWidth
+          margin="normal"
+        />
+        <Button type="submit" variant="contained" color="primary">
+          Crear
+        </Button>
+      </form>
+      {message && <Typography variant="body1">{message}</Typography>}
+    </div>
   );
 }
 

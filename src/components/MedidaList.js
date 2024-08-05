@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import {List, ListItem, ListItemText, Typography} from "@mui/material";
 
 function MedidaList() {
   const [medidas, setMedidas] = useState([]);
@@ -14,16 +15,21 @@ function MedidaList() {
       });
   }, []);
 
+
+
   return (
     <div>
-      <h2>Medidas de Seguridad</h2>
-      <ul>
-        {medidas.map(medida => (
-          <li key={medida.idmedidasseguridad}>{medida.medida}</li>
+      <Typography variant="h5" gutterBottom>
+        Lista de Medidas de seguridad
+      </Typography>
+      <List>
+        {medidas.map((medida) => (
+          <ListItem key={medida.idmedidasseguridad}>
+            <ListItemText primary={medida.medida} />
+          </ListItem>
         ))}
-      </ul>
+      </List>
     </div>
   );
 }
-
 export default MedidaList;

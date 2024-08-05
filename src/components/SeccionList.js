@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import {List, ListItem, ListItemText, Typography} from "@mui/material";
 
 function SeccionList() {
   const [secciones, setSecciones] = useState([]);
@@ -14,16 +15,20 @@ function SeccionList() {
       });
   }, []);
 
+
   return (
     <div>
-      <h2>Secciones</h2>
-      <ul>
-        {secciones.map(seccion => (
-          <li key={seccion.seccion_id}>{seccion.seccion_nombre}</li>
+      <Typography variant="h5" gutterBottom>
+        Lista de Secciones
+      </Typography>
+      <List>
+        {secciones.map((seccion) => (
+          <ListItem key={seccion.seccion_id}>
+            <ListItemText primary={seccion.seccion_nombre} />
+          </ListItem>
         ))}
-      </ul>
+      </List>
     </div>
   );
 }
-
 export default SeccionList;

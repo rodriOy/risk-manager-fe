@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { List, ListItem, ListItemText, Typography } from '@mui/material';
 
 function CategoriaList() {
   const [categorias, setCategorias] = useState([]);
@@ -16,12 +17,16 @@ function CategoriaList() {
 
   return (
     <div>
-      <h2>Categorías</h2>
-      <ul>
-        {categorias.map(categoria => (
-          <li key={categoria.idcategoria}>{categoria.categorianombre}</li>
+      <Typography variant="h5" gutterBottom>
+        Lista de Categorías
+      </Typography>
+      <List>
+        {categorias.map((categoria) => (
+          <ListItem key={categoria.idcategoria}>
+            <ListItemText primary={categoria.categorianombre} />
+          </ListItem>
         ))}
-      </ul>
+      </List>
     </div>
   );
 }
