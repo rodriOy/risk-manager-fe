@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Container, TextField, Button, Typography, Box, Alert, Autocomplete, CircularProgress } from '@mui/material';
+import { Container, TextField, Button, Typography, Box, Alert, Autocomplete, CircularProgress, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';
 import axios from 'axios';
 
 function InsuranceForm() {
@@ -10,6 +10,8 @@ function InsuranceForm() {
   const [message, setMessage] = useState('');
   const [inputText, setInputText] = useState('');
   const [loading, setLoading] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [securityMeasures, setSecurityMeasures] = useState([]);
 
   useEffect(() => {
     if (inputText.length < 3) {
@@ -41,11 +43,17 @@ function InsuranceForm() {
     }
     axios.get(`http://127.0.0.1:5000/mercaderia/${selectedGood.id}?SAT=${insuredSum}`)
       .then(response => {
-        setMessage('Formulario enviado con éxito');
+        setSecurityMeasures(response.data.medidas);
+        setOpenDialog(true);
       })
       .catch(error => {
         setMessage('Error al enviar el formulario');
       });
+  };
+
+  const handleClose = () => {
+    setOpenDialog(false);
+    setMessage('Formulario enviado con éxito');
   };
 
   return (
@@ -68,6 +76,7 @@ function InsuranceForm() {
           getOptionLabel={(option) => option.text}
           onInputChange={(event, newInputValue) => setInputText(newInputValue)}
           onChange={(event, newValue) => setSelectedGood(newValue)}
+          isOptionEqualToValue={(option, value) => option.id === value.id}
           loading={loading}
           renderInput={(params) => (
             <TextField
@@ -100,6 +109,28 @@ function InsuranceForm() {
         </Button>
       </Box>
       {message && <Alert severity={message.includes('Error') ? 'error' : 'success'}>{message}</Alert>}
+
+      <Dialog open={openDialog} onClose={handleClose}>
+        <DialogTitle>Medidas de Seguridad Requeridas</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Estimado usuario, para la mercadería que desea transportar se requieren las siguientes medidas de seguridad:
+          </DialogContentText>
+          <ul>
+            {securityMeasures.map((measure, index) => (
+              <li key={index}>{measure.medida}</li>
+            ))}
+          </ul>
+          <DialogContentText>
+            Recuerde que la aplicacion de las mismas condiciona la cobertura de la Póliza
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary">
+            Cerrar
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   );
 }
