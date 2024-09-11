@@ -1,59 +1,69 @@
-import React, { useState, useEffect } from 'react';
-import { Container, TextField, Button, Typography, Box, Alert, Autocomplete, CircularProgress, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';
+import React, { useState } from 'react';
+import { Container, TextField, Button, Typography, Box, Alert, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import axios from 'axios';
 
 function InsuranceForm() {
-  const [departureDate, setDepartureDate] = useState('');
-  const [goods, setGoods] = useState([]);
-  const [selectedGood, setSelectedGood] = useState(null);
-  const [insuredSum, setInsuredSum] = useState('');
+  const [mercaderia, setMercaderia] = useState('');
+  const [SAT, setSAT] = useState('');
+  const [fecha, setFecha] = useState('');
+  const [origen, setOrigen] = useState('');
+  const [destino, setDestino] = useState('');
   const [message, setMessage] = useState('');
-  const [inputText, setInputText] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [details, setDetails] = useState(null);
+  const [error, setError] = useState('');
   const [openDialog, setOpenDialog] = useState(false);
-  const [securityMeasures, setSecurityMeasures] = useState([]);
 
-  useEffect(() => {
-    if (inputText.length < 3) {
-      setGoods([]);
-      return;
-    }
+  const today = new Date().toISOString().split('T')[0];
 
-    const timeoutId = setTimeout(() => {
-      setLoading(true);
-      axios.post('http://127.0.0.1:5000/predict', { text: inputText })
-        .then(response => {
-          setGoods(response.data);
-          setLoading(false);
-        })
-        .catch(error => {
-          console.error('Error fetching predictions:', error);
-          setLoading(false);
-        });
-    }, 300); // 300ms delay before making API call
+  const formatCurrency = (value) => {
+    if (!value) return '';
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+    }).format(value);
+  };
 
-    return () => clearTimeout(timeoutId);
-  }, [inputText]);
+  const handleSATChange = (e) => {
+    const rawValue = e.target.value.replace(/\D/g, '');  // Solo números
+    setSAT(rawValue ? Number(rawValue) : '');
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!selectedGood) {
-      setMessage('Error: Debes seleccionar una mercadería.');
+
+    if (!mercaderia || !SAT || !fecha || !origen || !destino) {
+      setMessage('Por favor, completa todos los campos');
       return;
     }
-    axios.get(`http://127.0.0.1:5000/mercaderia/${selectedGood.id}?SAT=${insuredSum}`)
-      .then(response => {
-        setSecurityMeasures(response.data.medidas);
-        setOpenDialog(true);
-      })
-      .catch(error => {
-        setMessage('Error al enviar el formulario');
-      });
+
+    if (fecha < today) {
+      setError('La fecha no puede ser anterior a hoy');
+      return;
+    } else {
+      setError('');
+    }
+
+    axios.get(`http://127.0.0.1:5000/mercaderia`, {
+      params: {
+        SAT: parseInt(SAT, 10),
+        mercaderia: mercaderia
+      }
+    })
+    .then(response => {
+      setDetails(response.data);
+      setOpenDialog(true);
+    })
+    .catch(error => {
+      if (error.response && error.response.data && error.response.data.error) {
+        setMessage('Error: ' + error.response.data.error);
+      } else {
+        setMessage('Error al obtener los detalles de la mercadería');
+      }
+    });
   };
 
-  const handleClose = () => {
+  const handleCloseDialog = () => {
     setOpenDialog(false);
-    setMessage('Formulario enviado con éxito');
   };
 
   return (
@@ -63,70 +73,68 @@ function InsuranceForm() {
       </Typography>
       <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
         <TextField
-          label="Fecha de Salida"
+          label="Mercadería"
+          value={mercaderia}
+          onChange={(e) => setMercaderia(e.target.value)}
+          fullWidth
+          margin="normal"
+        />
+        <TextField
+          label="Suma Asegurada (SAT)"
+          value={formatCurrency(SAT)}  // Muestra el valor formateado como moneda
+          onChange={handleSATChange}  // Formatea el valor al cambiar
+          fullWidth
+          margin="normal"
+          inputProps={{ inputMode: 'numeric' }}  // Solo acepta números
+        />
+        <TextField
+          label="Fecha de Seguro"
           type="date"
-          value={departureDate}
-          onChange={(e) => setDepartureDate(e.target.value)}
+          value={fecha}
+          onChange={(e) => setFecha(e.target.value)}
           fullWidth
           InputLabelProps={{ shrink: true }}
           margin="normal"
-        />
-        <Autocomplete
-          options={goods}
-          getOptionLabel={(option) => option.text}
-          onInputChange={(event, newInputValue) => setInputText(newInputValue)}
-          onChange={(event, newValue) => setSelectedGood(newValue)}
-          isOptionEqualToValue={(option, value) => option.id === value.id}
-          loading={loading}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              label="Mercadería"
-              margin="normal"
-              fullWidth
-              InputProps={{
-                ...params.InputProps,
-                endAdornment: (
-                  <>
-                    {loading ? <CircularProgress color="inherit" size={20} /> : null}
-                    {params.InputProps.endAdornment}
-                  </>
-                ),
-              }}
-            />
-          )}
+          inputProps={{ min: today }}
         />
         <TextField
-          label="Suma Asegurada"
-          type="number"
-          value={insuredSum}
-          onChange={(e) => setInsuredSum(e.target.value)}
+          label="Lugar de Origen"
+          value={origen}
+          onChange={(e) => setOrigen(e.target.value)}
           fullWidth
           margin="normal"
         />
+        <TextField
+          label="Lugar de Destino"
+          value={destino}
+          onChange={(e) => setDestino(e.target.value)}
+          fullWidth
+          margin="normal"
+        />
+        {error && <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>}
         <Button type="submit" variant="contained" color="primary" sx={{ mt: 3, mb: 2 }}>
           Enviar
         </Button>
       </Box>
       {message && <Alert severity={message.includes('Error') ? 'error' : 'success'}>{message}</Alert>}
 
-      <Dialog open={openDialog} onClose={handleClose}>
-        <DialogTitle>Medidas de Seguridad Requeridas</DialogTitle>
+      {/* Pop-up para mostrar las medidas de seguridad */}
+      <Dialog open={openDialog} onClose={handleCloseDialog}>
+        <DialogTitle>Medidas de Seguridad</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            Estimado usuario, para la mercadería que desea transportar se requieren las siguientes medidas de seguridad:
-          </DialogContentText>
-          <ul>
-            {securityMeasures.map((measure, index) => (
-              <li key={index}>{measure.medida}</li>
-            ))}
-          </ul>
-          <DialogContentText>
-            Recuerde que la aplicacion de las mismas condiciona la cobertura de la Póliza
-          </DialogContentText>
+          {details && (
+            <Typography>
+              Para la mercadería <strong>{mercaderia}</strong> que sale el día <strong>{fecha}</strong> de <strong>{origen}</strong> a <strong>{destino}</strong> por el valor de <strong>{formatCurrency(SAT)}</strong>, se requieren las siguientes medidas de seguridad:
+            </Typography>
+          )}
+          {details?.medidas?.map((medida, index) => (
+            <Typography key={index} sx={{ mt: 2 }}>
+              - {medida.medida}
+            </Typography>
+          ))}
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="primary">
+          <Button onClick={handleCloseDialog} color="primary">
             Cerrar
           </Button>
         </DialogActions>

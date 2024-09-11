@@ -4,7 +4,7 @@ import {Button, TextField, Typography} from "@mui/material";
 
 function MedidaForm() {
   const [nombre, setNombre] = useState('');
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState(''); // Define and initialize the message state variable
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -19,7 +19,6 @@ function MedidaForm() {
         setMessage('Error: ' + error.response.data.error);
       });
   };
-
 
   return (
     <div>
@@ -43,4 +42,5 @@ function MedidaForm() {
     </div>
   );
 }
+
 export default MedidaForm;

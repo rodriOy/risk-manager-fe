@@ -8,7 +8,7 @@ import SeccionForm from './components/SeccionForm';
 import MedidaList from './components/MedidaList';
 import MedidaForm from './components/MedidaForm';
 import AssociateSeccionMedida from './components/AssociateSeccionMedida';
-import InsuranceForm from "./components/InsuranceForm";
+import AudioRecorder from "./components/InsuranceForm";
 
 function App() {
   return (
@@ -17,7 +17,7 @@ function App() {
         <AppBar position="static">
           <Toolbar>
             <Typography variant="h6">
-              Gestión de Categorías, Secciones y Medidas de Seguridad
+              Bienvenido a Risk Manager
             </Typography>
           </Toolbar>
         </AppBar>
@@ -56,16 +56,11 @@ function App() {
             <Route path="/secciones" element={<><SeccionForm /><SeccionList /></>} />
             <Route path="/medidas" element={<><MedidaForm /><MedidaList /></>} />
             <Route path="/associate-seccion-medida" element={<AssociateSeccionMedida />} />
-            <Route path="/insurance-form" element={<InsuranceForm />} />
+            <Route path="/insurance-form" element={<AudioRecorder />} />
 
             <Route path="/" element={
               <div>
-                <Typography variant="h4" gutterBottom>
-                  Bienvenido a la página principal
-                </Typography>
-                <Typography variant="body1">
-                  Utiliza el menú para navegar.
-                </Typography>
+
               </div>
             } />
           </Routes>
