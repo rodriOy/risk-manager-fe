@@ -81,7 +81,7 @@ function InsuranceForm() {
         />
         <TextField
           label="Suma Asegurada (SAT)"
-          value={formatCurrency(SAT)}  // Muestra el valor formateado como moneda
+          value={SAT}  // Muestra el valor sin formatear
           onChange={handleSATChange}  // Formatea el valor al cambiar
           fullWidth
           margin="normal"
