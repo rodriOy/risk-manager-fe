@@ -43,7 +43,7 @@ function InsuranceForm() {
       setError('');
     }
 
-    axios.get(`http://127.0.0.1:5000/mercaderia`, {
+    axios.get(`http://104.197.90.87:5000/mercaderia`, {
       params: {
         SAT: parseInt(SAT, 10),
         mercaderia: mercaderia

@@ -12,7 +12,7 @@ function AssociateSeccionMedida() {
   const [message, setMessage] = useState('');
 
   useEffect(() => {
-    axios.get('http://127.0.0.1:5000/secciones')
+    axios.get('http://104.197.90.87:5000/secciones')
       .then(response => {
         setSecciones(response.data);
       })
@@ -20,7 +20,7 @@ function AssociateSeccionMedida() {
         console.error('There was an error fetching the sections!', error);
       });
 
-    axios.get('http://127.0.0.1:5000/medidas')
+    axios.get('http://104.197.90.87:5000/medidas')
       .then(response => {
         setMedidas(response.data);
       })
@@ -31,7 +31,7 @@ function AssociateSeccionMedida() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.post('http://127.0.0.1:5000/associate_seccion_medida', {
+    axios.post('http://104.197.90.87:5000/associate_seccion_medida', {
       seccion_id: selectedSeccion,
       medida_id: selectedMedida,
       cotainf: cotainf,

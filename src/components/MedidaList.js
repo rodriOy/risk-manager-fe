@@ -6,7 +6,7 @@ function MedidaList() {
   const [medidas, setMedidas] = useState([]);
 
   useEffect(() => {
-    axios.get('http://127.0.0.1:5000/medidas')
+    axios.get('http://104.197.90.87:5000/medidas')
       .then(response => {
         setMedidas(response.data);
       })

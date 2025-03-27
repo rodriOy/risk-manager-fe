@@ -6,7 +6,7 @@ function SeccionList() {
   const [secciones, setSecciones] = useState([]);
 
   useEffect(() => {
-    axios.get('http://127.0.0.1:5000/secciones')
+    axios.get('http://104.197.90.87:5000/secciones')
       .then(response => {
         setSecciones(response.data);
       })
