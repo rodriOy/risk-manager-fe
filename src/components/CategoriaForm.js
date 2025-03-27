@@ -8,7 +8,7 @@ function CategoriaForm() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.post('/api/categorias', {
+    axios.post('http://104.197.90.87:5000/categorias', {
       categorianombre: nombre
     })
       .then(response => {
