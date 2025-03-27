@@ -9,7 +9,7 @@ function SeccionForm() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.post('http://104.197.90.87:5000/secciones', {
+    axios.post('/api/secciones', {
       seccion_nombre: nombre
     })
       .then(response => {
