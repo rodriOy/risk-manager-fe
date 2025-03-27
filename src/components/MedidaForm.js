@@ -8,7 +8,7 @@ function MedidaForm() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.post('http://104.197.90.87:5000/medidas', {
+    axios.post('/api/medidas', {
       medida: nombre
     })
       .then(response => {
